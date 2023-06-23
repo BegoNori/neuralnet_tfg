@@ -1,11 +1,11 @@
 using BSON, JLD2, CairoMakie, Statistics, Flux
 
-## Cargamos los datos
+# Load data
 Core.eval(Main, :(import NNlib))
 BSON.@load "waternet.bson" model
 data = JLD2.load("data.jld2", "data")
 
-# Nombramos los datos
+# Name data
 Xtrain = data.Xtrain; Ytrain = data.Ytrain;
 Xval = data.Xval; Yval = data.Yval
 Xtest = data.Xtest; Ytest = data.Ytest;
@@ -18,9 +18,9 @@ imin = data.imin; n_label = data.n_label;
 loss_before = data.loss_before; loss_after = data.loss_after;
 epochs = data.epochs; 
 
-##########################################################################################
+# Figures for the memory results
 
-fig = Figure()
+fig = Figure()   # LOSS BEFORE TRAINING first values
 ax = Axis(fig[1, 1], limits = ((0.7, 10.3), (-0.1, 1.1)))
 scatter!(ax, 1:10, vec(Y2d)[1:10], label = "ground truth", markersize = 10, color = :black)
 scatter!(ax, 1:10, vec(yhat_before)[1:10], label = "ŷ before training", markersize = 10, color = :red)
@@ -32,7 +32,7 @@ ax.subtitle = "Comparación datos de terreno y predicción previa al entrenamien
 ax.xticklabelsize = 20; ax.yticklabelsize = 20
 fig
 
-fig = Figure()
+fig = Figure()   # LOSS BEFORE TRAINING last values
 ax = Axis(fig[1, 1], limits = (nothing, (-0.1, 1.1)))
 scatter!(ax, n_label-10:n_label, vec(Y2d)[end-10:end], label = "ground truth", markersize = 10, color = :black)
 scatter!(ax, n_label-10:n_label, vec(yhat_before)[end-10:end], label = "ŷ before training", markersize = 10, color = :red)
@@ -44,7 +44,7 @@ ax.subtitle = "Comparación datos de terreno y predicción previa al entrenamien
 ax.xticklabelsize = 20; ax.yticklabelsize = 20
 fig
 
-fig = Figure()
+fig = Figure()   # LOSS AFTER TRAINING first values
 ax = Axis(fig[1, 1], limits = (nothing, (-0.1, 1.1)))
 scatter!(ax, 1:10, vec(Y2d)[1:10], label = "ground truth", markersize = 15, color = :black)
 scatter!(ax, 1:10, vec(yhat_after)[1:10], label = "ŷ after training", markersize = 10, color = :orange)
@@ -56,7 +56,7 @@ ax.subtitle = "Comparación datos de terreno y predicción posterior al entrenam
 ax.xticklabelsize = 20; ax.yticklabelsize = 20
 fig
 
-fig = Figure()
+fig = Figure()   # LOSS AFTER TRAINING last values
 ax = Axis(fig[1, 1], limits = (nothing, (-0.1, 1.1)))
 scatter!(ax, n_label-10:n_label, vec(Y2d)[end-10:end], label = "ground truth", markersize = 15, color = :black)
 scatter!(ax, n_label-10:n_label, vec(yhat_after)[end-10:end], label = "ŷ after training", markersize = 10, color = :orange)
@@ -68,9 +68,7 @@ ax.subtitle = "Comparación datos de terreno y predicción posterior al entrenam
 ax.xticklabelsize = 20; ax.yticklabelsize = 20
 fig
 
-##########################################################################################
-
-fig = Figure()
+fig = Figure()   # TRAIN AND VALLIDATION LOSS
 ax = Axis(fig[1, 1])
 lines!(ax, epochs, trainloss, label = "train", linewidth = 3, color = :blue)
 lines!(ax, epochs, valloss, label = "validation", linewidth = 3, color = :orange)
@@ -82,8 +80,7 @@ ax.subtitle = "''loss'' para los conjuntos de entrenamiento y validación"; ax.s
 ax.xticklabelsize = 20; ax.yticklabelsize = 20
 fig
 
-# Here we could optionally set a logarithmic y axis for nicer visualization.
-fig = Figure()
+fig = Figure()   # TRAIN AND VALLIDATION LOSS logarithmic scale
 ax = Axis(fig[1, 1], yscale=log10)
 lines!(ax, epochs, trainloss, label = "train", linewidth = 3, color = :blue)
 lines!(ax, epochs, valloss, label = "validation", linewidth = 3, color = :orange)
@@ -95,9 +92,7 @@ ax.subtitle = "''loss'' para conjuntos de entrenamiento y validación, escala lo
 ax.xticklabelsize = 20; ax.yticklabelsize = 20
 fig
 
-##########################################################################################
-# Visualization for the test set!
-
+# Visualization for the test set
 fig = Figure()   # PRUEBA 1
 ax = Axis(fig[1, 1])
 lines!(ax,  1:3001, vec(Ytest_hat)[1:3001], label = "model prediction", linewidth = 3, color = :green)
